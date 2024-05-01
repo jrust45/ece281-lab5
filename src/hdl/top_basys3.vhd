@@ -203,6 +203,14 @@ sevSeg_inst : sevenSegDecoder --instantiation of seven Seg
 	
 	
 	-- CONCURRENT STATEMENTS ----------------------------
-	
+
+--grounding un-used LEDs
+led(12 downto 0) <= (others => '0');
+
+--wiring active-low 7SD anodes
+an(0) <= '0';
+an(1) <= '0';
+an(2) <= '1';
+an(3) <= '1';
 
 end top_basys3_arch;
