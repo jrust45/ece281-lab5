@@ -177,10 +177,10 @@ TDM4_inst : TDM4
     Port map (
             i_clk => w_clk, --still needs to be finished in advanced version of elevator
             i_reset => btnU,
-            i_D3 => w_bin(7 downto 4),
-            i_D2 => w_bin(3 downto 0),
-            i_D1 => w_bin(7 downto 4),
-            i_D0 => w_bin(3 downto 0),
+            i_D3 => w_bin(7 downto 4), --w_sign,  --need to be updated once task B and C are implemented
+            i_D2 => w_bin(3 downto 0), --w_hund,
+            i_D1 => w_bin(7 downto 4), --w_tens,
+            i_D0 => w_bin(3 downto 0), --w_ones,
             o_data => w_data,
             o_sel => w_sel
             );
