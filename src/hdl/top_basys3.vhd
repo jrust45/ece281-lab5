@@ -52,14 +52,25 @@ architecture top_basys3_arch of top_basys3 is
 	          );
     end component controller_fsm;
     
+    component numRegister is
+        port(
+            --inputs
+            i_D     : in std_logic_vector(7 downto 0);
+            i_clk   : in std_logic;
+            --outputs
+            o_Q     : in std_logic_vector(7 downto 0)
+        );
+    end component numRegister;
     
+
     component ALU is 
-        Port ( i_A          : in std_logic_vector(7 downto 0);
-               i_B          : in std_logic_vector(7 downto 0);
-               i_op         : in std_logic_vector(2 downto 0);
-               o_result     : out std_logic_vector(7 downto 0);
-               o_flags      : out std_logic_vector(2 downto 0)
-              );
+        port( 
+            i_A          : in std_logic_vector(7 downto 0);
+            i_B          : in std_logic_vector(7 downto 0);
+            i_op         : in std_logic_vector(2 downto 0);
+            o_result     : out std_logic_vector(7 downto 0);
+            o_flags      : out std_logic_vector(2 downto 0)
+        );
     end component ALU;
 
 
@@ -125,6 +136,21 @@ controller_inst : controller_fsm --instantiation of controller
             i_adv => btnC,
             o_cycle => w_cycle
             );
+
+registerA_inst : numRegister
+    Port map (
+            i_D => sw(7 downto 0),
+            i_clk => w_cycle(1),
+            o_Q => w_A
+            );  
+            
+
+registerB_inst : numRegister
+    Port map (
+            i_D => sw(7 downto 0),
+            i_clk => w_cycle(2),
+            o_Q => w_B
+            );  
 
 
 AUL_inst : ALU --instantiation of the ALU
