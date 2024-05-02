@@ -45,7 +45,7 @@ architecture Behavioral of controller_fsm is
 begin
 
     --CONCURRENT STATEMENTS-----
-    --next state logic
+    --next state logic----------
                 --when progressing to next state (button was pressed)
     f_Q_next <= "00" when (i_adv = '1' and f_Q = "11") else
                 "01" when (i_adv = '1' and f_Q = "00") else
@@ -78,6 +78,6 @@ begin
         f_Q <= f_Q_next;
     end if;
     
-    end process register_proc;
+end process register_proc;
     
 end Behavioral;
