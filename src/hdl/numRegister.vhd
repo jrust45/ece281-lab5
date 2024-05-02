@@ -17,10 +17,9 @@
 -- Additional Comments:
 -- 
 ----------------------------------------------------------------------------------
-
-
-library IEEE;
-use IEEE.STD_LOGIC_1164.ALL;
+library ieee;
+  use ieee.std_logic_1164.all;
+  use ieee.numeric_std.all;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
@@ -39,7 +38,35 @@ end numRegister;
 
 architecture Behavioral of numRegister is
 
+    --created registers signals wit default state to off   
+    signal f_Q : std_logic := '0';     
+    signal f_Q_next : std_logic := '0'; 
+
 begin
 
-
+    --CONCURRENT STATEMENTS-----
+    --next state logic----------
+    
+    f_Q_next <= '1' when (i_clk = '1' and f_Q = '0') else 
+                '0'; -- when (i_clk = '1' and f_Q = '1');  --this low key might be wrong for future Jack
+    
+    o_Q <= i_D when (f_Q = '1') else
+           "00000000"; --default out case
+           
+           
+    -- PROCESS --------------
+    -- State memory ---------
+               
+register_proc : process (i_clk)
+begin
+    --asynchronous reset
+    
+    if (i_clk = '1') then
+        f_Q <= f_Q_next;
+    else
+        f_Q <= f_Q;     --also low key might be wrong future Jack
+    end if;
+   
+end process register_proc;
+ 
 end Behavioral;
