@@ -47,11 +47,11 @@ begin
     --CONCURRENT STATEMENTS-----
     --next state logic----------
     
-    f_Q_next <= '1' when (i_clk = '1' and f_Q = '0') else 
-                '0'; -- when (i_clk = '1' and f_Q = '1');  --this low key might be wrong for future Jack
+    --f_Q_next <= '1' when (i_clk = '1' and f_Q = '0') else 
+                --'0'; -- when (i_clk = '1' and f_Q = '1');  --this low key might be wrong for future Jack
     
-    o_Q <= i_D when (f_Q = '1') else
-           "00000000"; --default out case
+    --o_Q <= i_D when (f_Q = '1') else
+           --"00000000"; --default out case
            
            
     -- PROCESS --------------
@@ -61,10 +61,10 @@ register_proc : process (i_clk)
 begin
     --asynchronous reset
     
-    if (i_clk = '1') then
-        f_Q <= f_Q_next;
-    else
-        f_Q <= f_Q;     --also low key might be wrong future Jack
+    if ( rising_edge(i_clk) ) then
+        o_Q <= i_D;
+    --else
+        --f_Q <= f_Q;     --also low key might be wrong future Jack
     end if;
    
 end process register_proc;

@@ -32,8 +32,9 @@
 library ieee;
   use ieee.std_logic_1164.all;
   use ieee.numeric_std.all;
-
-
+library IEEE; 
+  use IEEE.numeric_std.ALL;
+ 
 entity ALU is
 -- TODO
     port( 
@@ -46,19 +47,20 @@ entity ALU is
         o_flags      : out std_logic_vector(2 downto 0)
     );
 end ALU;
-
+ 
 architecture behavioral of ALU is 
-  
-	-- declare components and signals
 
-  
+ 
+ 
+signal w_result : std_logic_vector(7 downto 0);
 begin
 	-- PORT MAPS ----------------------------------------
-
-	
-	
+ 
+ 
 	-- CONCURRENT STATEMENTS ----------------------------
-	
-	
-	
+	w_result <= std_logic_vector(unsigned(i_A) + unsigned(i_B));
+	o_result <= w_result;
+	o_flags(0) <= (i_A(7) xor w_result(7)) or (i_B(7) xor w_result(7));
+	o_flags(1) <= '1' when (w_result = "00000000") else '0';
+
 end behavioral;
