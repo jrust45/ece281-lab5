@@ -58,7 +58,7 @@ architecture top_basys3_arch of top_basys3 is
             i_D     : in std_logic_vector(7 downto 0);
             i_clk   : in std_logic;
             --outputs
-            o_Q     : in std_logic_vector(7 downto 0)
+            o_Q     : out std_logic_vector(7 downto 0)
         );
     end component numRegister;
     
@@ -119,11 +119,11 @@ architecture top_basys3_arch of top_basys3 is
     end component sevenSegDecoder;
 
 
-signal w_A, w_B, w_result, w_bin : std_logic_vector(7 downto 0);
+signal w_A, w_B, w_result, w_bin : std_logic_vector(7 downto 0) := "00000000";
 --signal w_sign, w_hund, w_tens, w_ones : std_logic_vector(3 downto 0); -- uncomment for task B and C
-signal w_data, w_cycle : std_logic_vector(3 downto 0);
-signal w_clk : std_logic;
-signal w_sel : std_logic_vector(3 downto 0);
+signal w_data, w_cycle : std_logic_vector(3 downto 0) := "0000";
+signal w_clk : std_logic := '0';
+signal w_sel : std_logic_vector(3 downto 0) := "0000";
 
 
     begin
@@ -177,8 +177,8 @@ TDM4_inst : TDM4
     Port map (
             i_clk => w_clk, --still needs to be finished in advanced version of elevator
             i_reset => btnU,
-            i_D3 => w_bin(7 downto 4), --w_sign,  --need to be updated once task B and C are implemented
-            i_D2 => w_bin(3 downto 0), --w_hund,
+            i_D3 => "0000", --w_sign,  --need to be updated once task B and C are implemented
+            i_D2 => "0000", --w_hund,
             i_D1 => w_bin(7 downto 4), --w_tens,
             i_D0 => w_bin(3 downto 0), --w_ones,
             o_data => w_data,
@@ -187,7 +187,7 @@ TDM4_inst : TDM4
                     
                          
 clkdiv_inst : clock_divider  		--instantiation of clock_divider
-    Generic map ( k_DIV => 25000000 ) -- 1 Hz clock from 100 MHz
+    Generic map ( k_DIV => 100000 ) -- 1 Hz clock from 100 MHz
     Port map (                          
             i_clk   => clk,
             i_reset => btnU,
@@ -204,13 +204,24 @@ sevSeg_inst : sevenSegDecoder --instantiation of seven Seg
 	
 	-- CONCURRENT STATEMENTS ----------------------------
 
+--display MUX
+w_bin <= w_A when (w_cycle(1 downto 0) = "00") else
+         w_result when (w_cycle(1 downto 0) = "01") else
+         w_B when (w_cycle(1 downto 0) = "10") else
+         "00000000";
+
 --grounding un-used LEDs
 led(12 downto 0) <= (others => '0');
 
 --wiring active-low 7SD anodes
-an(0) <= '0';
-an(1) <= '0';
-an(2) <= '1';
-an(3) <= '1';
+--an(0) <= '0';
+--an(1) <= '0';
+--an(2) <= not w_sel(3) or not w_sel(1);
+--an(3) <= not w_sel(2) or not w_sel(0);
+
+an(0) <= not w_sel(0); --not w_sel(2) or not w_sel(0);
+an(1) <= not w_sel(1); --not w_sel(2) or not w_sel(0);
+an(2) <= not w_sel(2);
+an(3) <= not w_sel(3);
 
 end top_basys3_arch;

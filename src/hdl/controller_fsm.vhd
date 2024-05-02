@@ -47,16 +47,10 @@ begin
     --CONCURRENT STATEMENTS-----
     --next state logic----------
                 --when progressing to next state (button was pressed)
-    f_Q_next <= "00" when (i_adv = '1' and f_Q = "11") else
-                "01" when (i_adv = '1' and f_Q = "00") else
-                "10" when (i_adv = '1' and f_Q = "01") else
-                "11" when (i_adv = '1' and f_Q = "10") else
-                
-                --when staying on current state (no button pressed)    
-                "00" when (i_adv = '0' and f_Q = "00") else
-                "01" when (i_adv = '0' and f_Q = "01") else
-                "10" when (i_adv = '0' and f_Q = "10") else
-                "11"; -- when (i_adv = '1' and f_Q = "11") else
+    f_Q_next <= "00" when (f_Q = "11") else
+                "01" when (f_Q = "00") else
+                "10" when (f_Q = "01") else
+                "11" when (f_Q = "10");
     
     
     o_cycle <= "1000" when (f_Q = "00") else
@@ -72,9 +66,9 @@ register_proc : process (i_reset, i_adv)
 begin
     --asynchronous reset
     
-    if i_reset = '1' then 
+    if ( i_reset = '1' ) then 
         f_Q <= "11";
-    elsif i_adv = '1' then
+    elsif ( rising_edge(i_adv) ) then
         f_Q <= f_Q_next;
     end if;
     

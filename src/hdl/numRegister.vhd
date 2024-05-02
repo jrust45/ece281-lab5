@@ -62,7 +62,7 @@ begin
     --asynchronous reset
     
     if ( rising_edge(i_clk) ) then
-        o_Q <= i_D;
+        o_Q <= i_D; --should work
     --else
         --f_Q <= f_Q;     --also low key might be wrong future Jack
     end if;

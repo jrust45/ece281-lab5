@@ -62,5 +62,6 @@ begin
 	o_result <= w_result;
 	o_flags(0) <= (i_A(7) xor w_result(7)) or (i_B(7) xor w_result(7));
 	o_flags(1) <= '1' when (w_result = "00000000") else '0';
+	o_flags(2) <= '0';
 
 end behavioral;
