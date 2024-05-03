@@ -32,6 +32,7 @@ entity top_basys3 is
         sw      : in std_logic_vector(15 downto 0);
         btnU    : in std_logic;
         btnC    : in std_logic;
+        btnL    : in std_logic;
         
         --outputs
         led     : out std_logic_vector(15 downto 0);
@@ -48,6 +49,7 @@ architecture top_basys3_arch of top_basys3 is
 	component controller_fsm is 
 	   Port ( i_reset      : in std_logic;
 	          i_adv        : in std_logic;
+	          i_stable     : in std_logic;
 	          o_cycle      : out std_logic_vector(3 downto 0)
 	          );
     end component controller_fsm;
@@ -134,13 +136,14 @@ controller_inst : controller_fsm --instantiation of controller
      Port map ( 
             i_reset => btnU,
             i_adv => btnC,
+            i_stable => btnL,
             o_cycle => w_cycle
             );
 
 registerA_inst : numRegister
     Port map (
             i_D => sw(7 downto 0),
-            i_clk => w_cycle(1),
+            i_clk => w_cycle(3),
             o_Q => w_A
             );  
             
@@ -211,7 +214,7 @@ w_bin <= w_A when (w_cycle(1 downto 0) = "00") else
          "00000000";
 
 --grounding un-used LEDs
-led(12 downto 0) <= (others => '0');
+led(12 downto 4) <= (others => '0');
 
 --wiring active-low 7SD anodes
 --an(0) <= '0';
@@ -219,9 +222,14 @@ led(12 downto 0) <= (others => '0');
 --an(2) <= not w_sel(3) or not w_sel(1);
 --an(3) <= not w_sel(2) or not w_sel(0);
 
-an(0) <= not w_sel(0); --not w_sel(2) or not w_sel(0);
-an(1) <= not w_sel(1); --not w_sel(2) or not w_sel(0);
-an(2) <= not w_sel(2);
-an(3) <= not w_sel(3);
+led(0) <= w_cycle(3); 
+led(1) <= w_cycle(2); 
+led(2) <= w_cycle(0) and not w_cycle(1);
+led(3) <= w_cycle(0) and w_cycle(1);
+
+an(0) <= w_sel(0); --not w_sel(2) or not w_sel(0);
+an(1) <= w_sel(1); --not w_sel(2) or not w_sel(0);
+an(2) <= w_sel(2);
+an(3) <= w_sel(3);
 
 end top_basys3_arch;

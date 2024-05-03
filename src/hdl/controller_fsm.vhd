@@ -33,6 +33,7 @@ library ieee;
 entity controller_fsm is
     Port ( i_reset : in STD_LOGIC;
            i_adv : in STD_LOGIC;
+           i_stable : in STD_LOGIC;
            o_cycle : out STD_LOGIC_VECTOR (3 downto 0));
 end controller_fsm;
 
@@ -68,7 +69,7 @@ begin
     
     if ( i_reset = '1' ) then 
         f_Q <= "11";
-    elsif ( rising_edge(i_adv) ) then
+    elsif ( rising_edge(i_adv) and i_stable = '1') then
         f_Q <= f_Q_next;
     end if;
     
