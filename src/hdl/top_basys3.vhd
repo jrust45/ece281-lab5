@@ -76,14 +76,15 @@ architecture top_basys3_arch of top_basys3 is
     end component ALU;
 
 
-    --component twoscomp_decimal is
-        --port(
-            --need to finish implementing for task B and C
-            --inputs
-            
-            --ouputs
-        --);
-    --end component twoscomp_decimal;
+    component twoscomp_decimal is
+        port(
+            i_binary: in std_logic_vector(7 downto 0);
+            o_negative: out std_logic;
+            o_hundreds: out std_logic_vector(3 downto 0);
+            o_tens: out std_logic_vector(3 downto 0);
+            o_ones: out std_logic_vector(3 downto 0)
+        );
+    end component twoscomp_decimal;
     
     
     component TDM4 is 
@@ -122,7 +123,8 @@ architecture top_basys3_arch of top_basys3 is
 
 
 signal w_A, w_B, w_result, w_bin : std_logic_vector(7 downto 0) := "00000000";
---signal w_sign, w_hund, w_tens, w_ones : std_logic_vector(3 downto 0); -- uncomment for task B and C
+signal w_sign2, w_hund, w_tens, w_ones : std_logic_vector(3 downto 0); -- uncomment for task B and C
+signal w_sign : std_logic := '0';
 signal w_data, w_cycle : std_logic_vector(3 downto 0) := "0000";
 signal w_clk : std_logic := '0';
 signal w_sel : std_logic_vector(3 downto 0) := "0000";
@@ -166,24 +168,24 @@ AUL_inst : ALU --instantiation of the ALU
             );
 
 
---twoscomp_inst : twoscomp_decimal
-    --Port map (
-            --i_bin => w_bin,
-            --o_sign => w_sign,
-            --o_hund => w_hund,
-            --o_tens => w_tens,
-            --o_ones => w_ones
-            --);
+twoscomp_inst : twoscomp_decimal
+    Port map (
+            i_binary => w_bin,
+            o_negative => w_sign,
+            o_hundreds => w_hund,
+            o_tens => w_tens,
+            o_ones => w_ones
+            );
             
        
 TDM4_inst : TDM4
     Port map (
             i_clk => w_clk, --still needs to be finished in advanced version of elevator
             i_reset => btnU,
-            i_D3 => "0000", --w_sign,  --need to be updated once task B and C are implemented
-            i_D2 => "0000", --w_hund,
-            i_D1 => w_bin(7 downto 4), --w_tens,
-            i_D0 => w_bin(3 downto 0), --w_ones,
+            i_D3 => w_sign2,  --need to be updated once task B and C are implemented
+            i_D2 => w_hund,
+            i_D1 => w_tens,
+            i_D0 => w_ones,
             o_data => w_data,
             o_sel => w_sel
             );
@@ -213,6 +215,9 @@ w_bin <= w_A when (w_cycle(1 downto 0) = "00") else
          w_B when (w_cycle(1 downto 0) = "10") else
          "00000000";
 
+w_sign2 <= "1111" when (w_sign = '1') else
+           "0000";
+           
 --grounding un-used LEDs
 led(12 downto 4) <= (others => '0');
 
